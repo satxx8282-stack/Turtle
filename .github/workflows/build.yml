@@ -1,0 +1,25 @@
+name: Build Blod Client
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.12"
+      - run: unzip -q blod-client.zip
+      - run: gradle build --no-daemon
+        working-directory: blod-client
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blod-client
+          path: |
+            blod-client/build/libs/*.jar
+            !blod-client/build/libs/*-sources.jar
